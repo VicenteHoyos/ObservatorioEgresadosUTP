@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="col-sm-6 pull-right" >
+<h1><center>Crear Noticia</center></h1>
+    <form method="POST" action="" enctype="multipart/form-data" >{% csrf_token %}
+        {{ form|crispy }}
+        <input class="btn btn-primary" type="submit" value="Crear Post">
+    </form>
+</div>
+{% endblock %}

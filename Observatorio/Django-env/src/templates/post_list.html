@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+    {% block head_title%} Posts List | {{ block.super }} {% endblock %}
+
+    {% block content %}
+
+    <div class="col-sm-6 col-sm-offset-3">
+    <h1>{{ title }}</h1>
+
+    <form method="GET" action="">
+        <input type="text" name="q" placeholder="buscar post" value="{{ request.GET.q }}"/>
+        <input type="submit" value="Buscar" />
+    </form>
+    <!-- {{ objects_list }} <br/> -->
+    
+    {% for obj in objects_list %}
+
+    <div class="row">
+        <div class="col-sm-12">    
+            <div class="thumbnail">
+                {% if obj.imagen %}
+                <img src="{{ obj.imagen.url }}" class="img-responsive"/>
+                {% endif %}
+                <div class="caption">
+                    {% if obj.draft %} <h3>Borrador</h3>{% endif %}{% if obj.publish > hoy %} <h3>Post Futuro </h3>{% endif %}
+                    <h3><a href="{{ obj.get_absolute_url }}">{{ obj.titulo }}</a><small> {{ obj.publish }} </small></h3>
+                    {%  if obj.user.get_full_name %}
+                        <p>Autor: {{ obj.user.get_full_name }}</p>
+                    {% else %}
+                         <p>Autor: {{ obj.user }}
+                     {% endif %}
+                    <p>{{ obj.contenido|linebreaks|truncatechars:50 }} </p>
+                    <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">Ver</a> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if objects_list.has_previous %}
+                <a href="?page=1 {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; primera</a>
+                <a href="?page={{ objects_list.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">anterior</a>
+            {% endif %}
+    
+            <span class="current">
+                Pag. {{ objects_list.number }} de {{ objects_list.paginator.num_pages }}.
+            </span>
+    
+            {% if objects_list.has_next %}
+                <a href="?page={{ objects_list.next_page_number }} {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">siguiente</a>
+                <a href="?page={{ objects_list.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">ultima &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    </div>
+    {% endblock %}
+
+    <!-- {% url 'posts:detail' id=obj.id %}  familia  App posts vista detail -->    
+    <!-- {{obj.pk}} <br/> -->           
+            

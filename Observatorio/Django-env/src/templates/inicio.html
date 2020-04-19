@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block head_title %}Bienvenidos | {{ block.super }}{% endblock %}
+
+<style>
+  {% block style %}
+    .jumbotron{
+
+      background-color: #4771e4 !important;
+      color: white !important;
+    }
+    .fa-5x {
+      font-size: 6em !important;
+    }
+  {% endblock %}
+</style>
+
+{% block jumbotron %}
+<div class="jumbotron">
+<div class="container">
+<div class='row'>
+  <div class='col-sm-6'>
+        <h2><strong>Observatorio Egresados UTP</strong></h2>
+        <p>Un proyecto que tiene por objetivo construir una aplicativo capaz de conectar a Egresados de la institucion.</p>
+        <p>
+          <a class="btn btn-lg btn-primary" href="{% url 'registration_register' %}" role="button">Únete &raquo;</a>
+        </p>
+  </div>
+<div class='col-sm-6'> <img src='{% static "img/django.png" %}' class="img-responsive" /></div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-3 col-xs-12 pull-right">
+    {% if not user.is_authenticated %}
+    <p class='lead text-align-center'>{{ titulo }}</p>    
+		<form method="POST" action="">{% csrf_token %}
+		{{ form_comentario | crispy }}
+		<input class='btn btn-primary' type='submit' value='Inscribirse' />
+    </form>
+    {% endif %}
+  </div>
+<div class='col-sm-3'>
+  <p class='lead text-align-center'>Creado con Django &amp; Bootstrap.</p><img src='{% static "img/logo.jpg" %}' class="img-responsive" />
+</div>
+<div class='col-sm-3'>
+  <p class='lead text-align-center'>Y con mucho amor, claro. </br><i class="fas fa-camera fa-5x" aria-hidden="true"></i></p>
+</div>
+<div class='col-sm-3'>
+  <p class='lead text-align-center'>Código abierto, siempre. </br><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span></i>
+
+  </p>
+</div>
+</div>
+
+
+<hr/>
+{% endblock %}
