@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -6,6 +7,7 @@ from django.urls import reverse
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
 from django.utils import timezone
+from datetime import datetime
 # Create your models here.
 
 TYPE_USERS = [
@@ -17,7 +19,10 @@ TYPE_USERS = [
 def upload_location(instance, filename):
     return "%s/%s" %(instance.id, filename)
 
-class Profile(models.Model):
+class User(AbstractUser):
+    is_superusuario = models.BooleanField(default=False)
+    is_administrador = models.BooleanField(default=False)
+    is_egresado =models.BooleanField(default=False)
 
     UNDEFINED = 'indef'
     MALE = 'masc'
@@ -28,13 +33,13 @@ class Profile(models.Model):
         (FEMALE, 'Femenino')
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    type_user = models.CharField(
-        max_length=100,
-        verbose_name='Tipo de usuario',
-        choices=TYPE_USERS,
-        default=TYPE_USERS[0][0]
-    )
+    # # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # type_user = models.CharField(
+    #     max_length=100,
+    #     verbose_name='Tipo de usuario',
+    #     choices=TYPE_USERS,
+    #     default=TYPE_USERS[0][0]
+    # )
     
     imagen_Perfil = models.ImageField(upload_to=upload_location,
         null = True,
@@ -47,7 +52,7 @@ class Profile(models.Model):
     # interests = models.ManyToManyField(Subject, related_name='interested_students')
     ciudad = models.TextField(max_length=20)
     dni_administrador = models.CharField(max_length=20)
-    fecha_Nacimiento = models.DateField(auto_now_add=False , auto_now = False)
+    fecha_Nacimiento = models.DateField(default=datetime.now)
     genero = models.CharField(max_length=6, choices=GENDER_CHOICE, default=UNDEFINED)
     confirmation_handling_sensitive_data = models.BooleanField(default=True)
     biografia = models.CharField(max_length=50)
@@ -58,10 +63,28 @@ class Profile(models.Model):
 
     #interests = models.ManyToManyField(Subject, related_name='interested_students')
 
+    # Obtenemos los perfiles de cada usuario acorde a su tipo
+
+    def get_superusuario_profile(self):
+        superusuario_profile = None
+        if hasattr(self, 'superusuarioprofile'):
+            superusuario_profile=self.superusuarioprofile
+        return superusuario_profile
+
+    def get_egresado_profile(self):
+        egresado_profile = None
+        if hasattr(self, 'egresadoprofile'):
+            egresado_profile = self.egresadoprofile
+        return egresado_profile
+
+    def get_administrador_profile(self):
+        administrador_profile = None
+        if hasattr(self, 'administradorprofile'):
+            administrador_profile = self.administradorprofile
+        return administrador_profile
 
     class Meta:
-        verbose_name = 'Perfil'
-        verbose_name_plural = 'Perfiles'
+        db_table = 'auth_user'
 
     def get_absolute_url(self):
         return reverse('users:detailuser', kwargs={"slug":self.slug}) #namespace posts
@@ -69,7 +92,7 @@ class Profile(models.Model):
 
     def __str__(self):
         """Return username."""
-        return self.user.username
+        return self.username
 
 # def create_slug(instance, new_slug= None):
 #     slug = slugify(instance.user)

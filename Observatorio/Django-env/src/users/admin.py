@@ -1,16 +1,19 @@
 from django.contrib import admin
 
-from .models import Profile
+from .models import User
+
+from django.contrib.auth.admin import UserAdmin
+
 # Register your models here.
 
-class userModelAdmin(admin.ModelAdmin):
-    list_display=["type_user","imagen_Perfil", "website","telefono","ciudad", "dni_administrador","fecha_Nacimiento", "genero","confirmation_handling_sensitive_data", "biografia"]
+
+class UserAdmin(admin.ModelAdmin):
+    list_display =["id","username","password","first_name","last_name","email","is_staff","is_active","is_superuser", "is_superusuario" , "is_administrador" , "is_egresado","imagen_Perfil", "website","telefono","ciudad", "dni_administrador","fecha_Nacimiento", "genero","confirmation_handling_sensitive_data", "biografia",'last_login','date_joined']
     list_display_links=["dni_administrador"]
     list_filter = ["timestamp"]
     search_fields = ["dni_administrador"]
     # list_editable = ["titulo"] 
     class Meta:
-        model = Profile
+        model = User
 
-
-admin.site.register(Profile, userModelAdmin)
+admin.site.register(User, UserAdmin)

@@ -14,11 +14,11 @@ from django.shortcuts import get_object_or_404, render, redirect
 # Create your views here.
 
 from .forms import userForm
-from .models import Profile #importo mi modelo
+from .models import User #importo mi modelo
 
 def user_detail(request):
      #instance= Post.objects.get(id=None)
-    instance = get_object_or_404(Profile, id=1)
+    instance = get_object_or_404(User, id=1)
   
 
     context = {        
