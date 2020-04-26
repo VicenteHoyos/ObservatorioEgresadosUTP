@@ -1,15 +1,17 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.contrib import messages
 
 from .forms import RegModelForm , ContactForm
 from .models import Registrado, Contacto
 
 # Create your views here.
 def inicio(request):
-	titulo = "Bienvenidos."
-	if request.user.is_authenticated:
-		titulo = "Bienvenid@ %s" %(request.user) #saludo 
+	titulo = "Registrate"
+	# if request.user.is_authenticated:
+	# 	titulo = "Bienvenid@ %s" %(request.user) #saludo 
 	form = RegModelForm(request.POST or None)
 
 	context = {
@@ -21,6 +23,24 @@ def inicio(request):
 		instance = form.save(commit=False)
 		nombre = form.cleaned_data.get("nombre")
 		email = form.cleaned_data.get("email")
+		# comentario = form.cleaned_data.get("comentario")
+		instance = form.save(commit = False)
+		form_email = form.cleaned_data.get("email")
+		form_nombre = form.cleaned_data.get("nombre")
+		asunto = 'Solicitud Registro Observatorio Egresados'
+		email_from = settings.EMAIL_HOST_USER
+		email_to = [email_from]
+		email_mensaje = "%s: Solicitud Registro Cuenta Enviado por %s Enviado a %s" %(form_nombre , form_email, email_to)
+		send_mail(asunto, 
+			email_mensaje,
+			email_from,
+			email_to,
+			fail_silently=False
+			)
+		instance.user = request.user
+		instance.save()	
+		return HttpResponseRedirect(instance.get_absolute_url())
+
 		if not instance.nombre:
 			instance.nombre = "Anonimo"
 		instance.save()
@@ -51,6 +71,7 @@ def contacto(request):
 	titulo = "Contacto"
 	form = ContactForm(request.POST or None)
 	if form.is_valid():
+		instance = form.save(commit = False)
 		form_email = form.cleaned_data.get("email")
 		form_mensaje = form.cleaned_data.get("mensaje")
 		form_nombre = form.cleaned_data.get("nombre")
@@ -64,6 +85,11 @@ def contacto(request):
 			email_to,
 			fail_silently=False
 			)
+		instance.user = request.user
+		instance.save()	
+		messages.success(request, "Tu mensaje ha sido enviado con Exito")
+		return HttpResponseRedirect(instance.get_absolute_url())
+
 	context = {
 		"form_contacto": form,
 		"titulo": titulo,

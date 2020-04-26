@@ -1,10 +1,13 @@
 
 {% if messages %}
-        <div class="messages">
+<div class="row">
+        <div class="col-md-8" class="messages">
             <ul class="messages">
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{% if "html_safe" in message.tags %}{{ message|safe }}{% else %}{{ message }} {% endif %}</li>
+            <h2><center><strong><li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{% if "html_safe" in message.tags %}{{ message|safe }}{% else %}{{ message }} {% endif %}</li></strong></center></h2> 
             {% endfor %}
             </ul>        
         </div>
+    </div>
+
 {% endif %}

@@ -1,11 +1,11 @@
 from django import forms
 
-from .models import Registrado #se importa el modelo
+from .models import Registrado,Contacto #se importa el modelo
 
 class RegModelForm(forms.ModelForm):
 	class Meta:
 		model = Registrado
-		fields = ["nombre", "email", "comentario",]
+		fields = ["nombre", "email",]
 
 	def clean_email(self):
 		email = self.cleaned_data.get("email")
@@ -23,7 +23,7 @@ class RegModelForm(forms.ModelForm):
 
 class ContactForm(forms.ModelForm):
 	class Meta:
-		model = Registrado
+		model = Contacto
 		fields = ["nombre", "email", "comentario",]
 
 	def clean_email(self):

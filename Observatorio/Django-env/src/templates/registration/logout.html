@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block content %}
-<p>{% trans "Logged out" %}</p>
+{% block contentOut %}
+<div class="row">
+    <div class="col-md-8" class="messages">
+        <ul class="messages">
+
+        <h2><center><strong>{% trans "Logged out" %}</strong></center></h2> 
+       
+        </ul>        
+    </div>
+</div>
+
 {% endblock %}

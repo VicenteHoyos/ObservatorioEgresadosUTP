@@ -15,9 +15,16 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="{% url 'portal:inicio' %}">Inicio   |</a></li>
-        <li><a href="{% url 'portal:about' %}">Acerca de Nosotros   |</a></li>
-        <li><a href="{% url 'portal:contact' %}">Contacto</a></li>
+        <li class="active"><a href="{% url 'portal:inicio' %}">Inicio</a></li>
+
+        {% if request.user.is_staff and user.is_superuser %}
+        <li><a href="{% url 'portal:about' %}">   Ver Perfil</a></li>
+        {% endif %}
+
+        {% if request.user.is_staff and not user.is_superuser %}
+        <li><a href="{% url 'portal:about' %}">   Ver Perfil</a></li>
+        <li class="active"><a href="{% url 'portal:contact' %}">   Contacto</a></li>
+        {% endif %}
         <!-- <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -31,14 +38,14 @@
           </ul> -->
         </li>
       </ul>
-            <ul class="nav navbar-nav navbar-right">
+        <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated %}
         <li><a href="{% url 'auth_logout' %}">Cerrar Sesion</a></li>
-        {% else %}
-        <li><a href="{% url 'registration_register' %}">Registrarte</a></li>
+        <!-- <li><a href="{% url 'registration_register' %}">Registrarte</a></li>   -->
         <!-- <li class="active"><a href="{% url 'auth_login' %}">Login</a></li> -->
         {% endif %}
       </ul>
+
       {% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
       <form class="navbar-form navbar-right" method="POST" action="{% url 'auth_login' %}">{% csrf_token %}
         <div class="form-group">
@@ -49,6 +56,13 @@
         </div>
         <button type="submit" class="btn btn-default">Iniciar Sesion</button>
       </form>
+      {% else %}
+      {% if not user.is_superuser and request.user.is_staff %}
+      <center><h3><span class="label label-default">Administrador | {{request.user }}</h3></span></center>
+      {% endif %}
+      {% if  user.is_superuser %} 
+      <center><h3><span class="label label-default">Superusuario | {{request.user }}</h3></span></center>
+      {% endif %}
       {% endif %}
     </div><!--/.nav-collapse -->
   </div>

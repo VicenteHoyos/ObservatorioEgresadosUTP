@@ -2,11 +2,11 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="col-sm-6 pull-right" >
-<h1><center>Crear Noticia</center></h1>
+<div class="col-sm-10 col-sm-offset-1" >
+<h1><center><strong>Crear Noticia</strong> </center></h1>
     <form method="POST" action="" enctype="multipart/form-data" >{% csrf_token %}
         {{ form|crispy }}
-        <input class="btn btn-primary" type="submit" value="Crear Post">
+        <input class="btn btn-primary" type="submit" value="Crear Noticia">
     </form>
 </div>
 {% endblock %}

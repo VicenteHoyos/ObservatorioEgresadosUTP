@@ -1,0 +1,51 @@
+{% load static %}
+<br>
+<br>
+<div id="page-content-wrapper">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-4" id="right">
+                        <div class="panel panel-default ">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Opciones</h3>
+                            </div>
+                            <!--User details -->
+                            <div class="panel-body">
+                                {% if not user.is_superuser and request.user.is_staff %}
+                                <li><a href="{% url 'posts:create' %}">Crear Noticia</a></li>
+                                <li><a href="{% url 'posts:list' %}">Modificar Noticia</a></li>
+                                <li><a href="#">Habilitar Cuenta Egresado</a></li>
+                                <li><a href="#">Modificar Cuenta Egresado</a></li>
+                                <li><a href="#">Buscar Cuenta Egresado</a></li>
+                                <li><a href="#">Deshabilitar Cuenta Egresado</a></li>
+                                <li><a href="#">Crear Interes</a></li>
+                                {% endif %}
+
+                                {% if  user.is_superuser %}
+                                <li><a href="{% url 'registration_register' %}">Crear Cuenta Administrador</a></li>
+                                <li><a href="#">Modificar Cuenta Administrador</a></li>
+                                <li><a href="#">Deshabilitar Cuenta Administrador</a></li>
+                                <li><a href="#">Buscar Cuenta Administrador</a></li>
+                                <li><a href="#">Editar Perfil</a></li>
+                                
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                </div>
+                <div class="col-sm-8" id="left">
+                    <!--All apps -->
+                    <div class="panel panel-default" ng-init="">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading clearfix">
+                            <b>{% if not user.is_superuser and request.user.is_staff %}
+                                Administrador {{request.user}}
+                                {% endif %}
+                                {% if user.is_superuser %}
+                                Administrador superusuario {{request.user}}
+                                {% endif %}
+                            </b>
+                         </div>
+                        <div class="panel-body">
+                            <table-here>
