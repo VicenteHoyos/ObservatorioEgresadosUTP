@@ -18,11 +18,11 @@
         <li class="active"><a href="{% url 'portal:inicio' %}">Inicio</a></li>
 
         {% if request.user.is_staff and user.is_superuser %}
-        <li><a href="{% url 'portal:about' %}">   Ver Perfil</a></li>
+        <!-- <li><a href="{% url 'users:userlist' %}">   Ver Perfil</a></li> -->
         {% endif %}
 
         {% if request.user.is_staff and not user.is_superuser %}
-        <li><a href="{% url 'portal:about' %}">   Ver Perfil</a></li>
+        <!-- <li><a href="{% url 'users:userlist' %}">   Ver Perfil</a></li> -->
         <li class="active"><a href="{% url 'portal:contact' %}">   Contacto</a></li>
         {% endif %}
         <!-- <li class="dropdown">

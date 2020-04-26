@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     #nuestras Apps
     'posts',
     'portal',
+    'users',
 ]
 
 MIDDLEWARE = [

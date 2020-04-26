@@ -3,9 +3,12 @@ from django.core.mail import send_mail
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.db.models import Q
 
-from .forms import RegModelForm , ContactForm
-from .models import Registrado, Contacto
+from .forms import RegModelForm , ContactForm, InvitacionAdminForm
+from .models import Registrado, Contacto, InvitacionAdmin
 
 # Create your views here.
 def inicio(request):
@@ -66,6 +69,36 @@ def inicio(request):
 	# 		"queryset":["abc","123"],
 	# 	}
 	return render(request, "inicio.html", context)
+
+def invitacionAdmin(request):
+	titulo = "Invitar Administrador"
+	form = InvitacionAdminForm(request.POST or None)
+	if form.is_valid():
+		instance = form.save(commit = False)
+		form_email = form.cleaned_data.get("email")
+		form_nombre = form.cleaned_data.get("nombre")
+		asunto = 'Invitacion Administrador Observatorio Egresados'
+		link ='http://127.0.0.1:8000/accounts/register/'
+		email_from = settings.EMAIL_HOST_USER
+		email_to = [form_email]
+		email_mensaje = "Cordial saludo %s: El presente correo es para invitarlo a formar parte del grupo de administradores de Observatorio de Egresados. Para crear su cuenta ingreser al link %s de lo contrario haga caso omiso a este correo. Enviado por %s.  " %(form_nombre,link,email_from)
+		send_mail(asunto, 
+			email_mensaje,
+			email_from,
+			email_to,
+			fail_silently=False
+			)
+		instance.user = request.user
+		instance.save()	
+		messages.success(request, "Tu mensaje ha sido enviado con Exito")
+		return HttpResponseRedirect(instance.get_absolute_url())
+
+	context = {
+		"form_contacto": form,
+		"titulo": titulo,
+	}
+	return render(request, "inviteadmin.html", context)
+
 
 def contacto(request):
 	titulo = "Contacto"

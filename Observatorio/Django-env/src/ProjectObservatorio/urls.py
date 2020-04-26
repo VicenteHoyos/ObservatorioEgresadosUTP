@@ -22,10 +22,12 @@ from django.conf.urls import url
 
 from posts import views
 from portal import views
+from users import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', include(('posts.urls', 'posts'), namespace='posts')),
+    path('users/', include(('users.urls', 'users'), namespace='users')),
     path('', include(('portal.urls', 'portal'), namespace='portal')),
     path('accounts/', include('registration.backends.default.urls')),
 ]

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{%  load urlify%}
+
+{% block head_title%}Detalles Perfil | {{ block.super }} {% endblock %}
+
+{% block content %}
+<div class="col-sm-10 col-sm-offset-1">
+
+    {{ instance.user.get_username }}
+    {%  if instance.user.get_full_name %}
+        <p>Autor: {{ instance.user.get_full_name }}</p>
+    {% else %}
+        <p>Autor: {{ instance.user }}
+    {% endif %}
+
+    <!-- {% if instance.imagen %}
+        <img src="{{ instance.imagen_Perfil.url }}" class="img-responsive"/>
+    {% endif %}
+    <h1>{{ instance.user }} <small> {{ instance.timestamp }}</small></h1><br>
+    {%  if instance.user.get_full_name %}
+        <p>Autor: {{ instance.user.get_full_name }}</p>
+    {% else %}
+        <p>Autor: {{ instance.user }}
+    {% endif %}
+    
+    {{ instance.dni_administrador }} <br/> -->
+    
+{% endblock %}

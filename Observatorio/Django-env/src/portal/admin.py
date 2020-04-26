@@ -1,11 +1,21 @@
 from django.contrib import admin
 
 # Register your models here.
-from .forms import RegModelForm, ContactForm #formulario
-from .models import Registrado, Contacto
+from .forms import RegModelForm, ContactForm , InvitacionAdminForm#formulario
+from .models import Registrado, Contacto,InvitacionAdmin
 
 class AdminRegistrado(admin.ModelAdmin):
-	list_display = ["email", "nombre","comentario", "timestamp"]
+	list_display = ["email", "nombre", "timestamp"]
+	form = RegModelForm
+	# list_display_links = ["nombre"]
+	list_filter = ["timestamp"]
+	list_editable = ["nombre"]
+	search_fields = ["email", "nombre"]
+	# class Meta:
+	# 	model = Registrado
+
+class AdminInvitacionAdmin(admin.ModelAdmin):
+	list_display = ["email", "nombre", "timestamp"]
 	form = RegModelForm
 	# list_display_links = ["nombre"]
 	list_filter = ["timestamp"]

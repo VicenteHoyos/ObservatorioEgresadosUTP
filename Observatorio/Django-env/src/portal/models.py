@@ -15,6 +15,18 @@ class Registrado(models.Model):
 		return reverse('portal:inicio') #namespace posts
         #"/posts/%s/" %(self.id)
 
+class InvitacionAdmin(models.Model):
+	nombre = models.CharField(max_length=100, blank=True, null=True)
+	email = models.EmailField()
+	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+	def __str__(self): #Python 3
+		return self.email
+
+	def get_absolute_url(self):
+		return reverse('portal:inviteadmin') #namespace posts
+        #"/posts/%s/" %(self.id)
+
 class Contacto(models.Model):
 	nombre = models.CharField(max_length=100, blank=True, null=True)
 	email = models.EmailField()

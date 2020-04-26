@@ -20,14 +20,17 @@
                                 <li><a href="#">Buscar Cuenta Egresado</a></li>
                                 <li><a href="#">Deshabilitar Cuenta Egresado</a></li>
                                 <li><a href="#">Crear Interes</a></li>
+                                <li><a href="{% url 'auth_password_change' %}">Modificar Contraseña</a></li>
                                 {% endif %}
 
                                 {% if  user.is_superuser %}
-                                <li><a href="{% url 'registration_register' %}">Crear Cuenta Administrador</a></li>
-                                <li><a href="#">Modificar Cuenta Administrador</a></li>
+                                <li><a href="{% url 'portal:inviteadmin' %}">Invitar Administrador</a></li>
+                                <li><a href="{% url 'users:userlist' %}">Habilitar Cuenta Administrador</a></li>
+                                <li><a href="">Modificar Cuenta Administrador</a></li>
                                 <li><a href="#">Deshabilitar Cuenta Administrador</a></li>
                                 <li><a href="#">Buscar Cuenta Administrador</a></li>
                                 <li><a href="#">Editar Perfil</a></li>
+                                <li><a href="{% url 'auth_password_change' %}">Modificar Contraseña</a></li>
                                 
                                 {% endif %}
                                 
