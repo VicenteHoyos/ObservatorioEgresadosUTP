@@ -44,18 +44,17 @@ class User(AbstractUser):
     imagen_Perfil = models.ImageField(upload_to=upload_location,
         null = True,
         blank = True,
-        height_field="height_field", 
-        width_field="width_field")
+        )
     
     website = models.URLField(max_length=200, blank=True)
     telefono = models.IntegerField(default=0)
     # interests = models.ManyToManyField(Subject, related_name='interested_students')
-    ciudad = models.TextField(max_length=20)
+    ciudad = models.CharField(max_length=20)
     dni_administrador = models.CharField(max_length=20)
     fecha_Nacimiento = models.DateField(default=datetime.now)
     genero = models.CharField(max_length=6, choices=GENDER_CHOICE, default=UNDEFINED)
     confirmation_handling_sensitive_data = models.BooleanField(default=True)
-    biografia = models.CharField(max_length=50)
+    biografia = models.TextField(max_length=50)
     timestamp = models.DateTimeField(auto_now_add=True , auto_now = False)
     actualizado= models.DateTimeField(auto_now_add=False , auto_now = True)
     # created = models.DateTimeField(auto_now_add=True)
@@ -87,7 +86,7 @@ class User(AbstractUser):
         db_table = 'auth_user'
 
     def get_absolute_url(self):
-        return reverse('users:detailuser', kwargs={"slug":self.slug}) #namespace posts
+        return reverse('users:detailuser') #namespace posts
         #"/posts/%s/" %(self.id)
 
     def __str__(self):

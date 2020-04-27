@@ -17,15 +17,38 @@ from .forms import userForm
 from .models import User #importo mi modelo
 
 def user_detail(request):
-     #instance= Post.objects.get(id=None)
-    instance = get_object_or_404(User, id=1)
+    #instance= Post.objects.get(id=None)
+    instance = get_object_or_404(User, id=request.user.id)
   
-
     context = {        
-        "username": instance.user,
         "instance": instance,
     }
+
     return render(request,"user_detail.html", context)
+
+def user_update(request):
+
+    if not request.user.is_authenticated :
+        raise Http404
+    #instance= Post.objects.get(id=None)
+    instance = get_object_or_404(User, id=request.user.id)
+
+    form = userForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+    
+    if form.is_valid():
+        instance = form.save(commit = False)
+        instance.save()
+        messages.success(request, "tu <a href='#'> post </a> ha sido modificado", extra_tags="html_safe")                
+        return HttpResponseRedirect(instance.get_absolute_url())
+    
+    context = {        
+        "title": "Modificar Datos Cuenta",
+        "instance": instance,
+        "form": form,
+    }
+
+    return render(request,"user_update.html", context)
+
 
 def user_list(request):
 	if request.user.is_superuser:

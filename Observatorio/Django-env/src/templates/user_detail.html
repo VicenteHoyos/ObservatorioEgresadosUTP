@@ -4,25 +4,49 @@
 {% block head_title%}Detalles Perfil | {{ block.super }} {% endblock %}
 
 {% block content %}
-<div class="col-sm-10 col-sm-offset-1">
+<div class="col-sm-12 col-sm-offset-1 ">
 
-    {{ instance.user.get_username }}
-    {%  if instance.user.get_full_name %}
-        <p>Autor: {{ instance.user.get_full_name }}</p>
-    {% else %}
-        <p>Autor: {{ instance.user }}
-    {% endif %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
 
-    <!-- {% if instance.imagen %}
-        <img src="{{ instance.imagen_Perfil.url }}" class="img-responsive"/>
-    {% endif %}
-    <h1>{{ instance.user }} <small> {{ instance.timestamp }}</small></h1><br>
-    {%  if instance.user.get_full_name %}
-        <p>Autor: {{ instance.user.get_full_name }}</p>
-    {% else %}
-        <p>Autor: {{ instance.user }}
-    {% endif %}
-    
-    {{ instance.dni_administrador }} <br/> -->
+               
+                  <div class="col">
+                      
+                    <div class="panel-body">
+                      <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
+                        {% if not instance.imagen_Perfil %}
+                            <img alt="User Pic" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive"> 
+                        {% else %}
+                            <img src="{{ instance.imagen_Perfil.url }}" class="img-circle img-responsive"/>
+                        {% endif %}
+
+                       <h4>Biografia</h4> 
+                       <p>{{ instance.biografia }}</p>
+                 
+                      </div>
+                      <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8" >
+                          <div class="container" >
+                            <h2>{{ instance.username }}</h2>
+                            <p>Cargo:  <b> {% if instance.is_superuser %} Superusuario {% endif %}</b></p>
+                          
+                           
+                          </div>
+                           <hr>
+                          <ul class="container details" >
+                            <li><p><span class="glyphicon glyphicon-user one" style="width:50px;"></span>{% if instance.get_full_name %}{{ instance.get_full_name }} {% else %} {{ instance.username }} {% endif %}</p></li>
+                            <li><p><span class="glyphicon glyphicon-envelope one" style="width:50px;"></span>{{ instance.email }}</p></li>
+                            <li><p><span class="glyphicon glyphicon-phone" style="width:50px;"></span>{{ instance.telefono }}</p></li>
+                          </ul>
+                          <hr>
+                          <div class="col-sm-10 col-xs-12 tital " >Fecha de Nacimiento: {{ instance.fecha_Nacimiento }}</div>
+                          <hr>
+                          <div class="col-sm-10 col-xs-12 tital " >Se unió: {{ instance.date_joined }}</div>
+                          
+                      </div>
+                
+            </div>
+            
     
 {% endblock %}
