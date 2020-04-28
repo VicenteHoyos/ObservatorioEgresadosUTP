@@ -60,6 +60,9 @@
                           
                       </div>
                     </div>
+                    <hr>
+                    <p><a href="{% url 'users:userdisableadmin' id=obj.id %}" class="btn btn-primary" role="button">Deshabilitar Cuenta Administrador</a>
+                        <a href="{% url 'portal:inicio' %}" class="btn btn-primary" role="button">Cancelar</a> </p>
                 </div>
         {% endif %}
     {% endfor %}

@@ -49,12 +49,12 @@ class User(AbstractUser):
     website = models.URLField(max_length=200, blank=True)
     telefono = models.IntegerField(default=0)
     # interests = models.ManyToManyField(Subject, related_name='interested_students')
-    ciudad = models.CharField(max_length=20)
+    ciudad = models.CharField(max_length=30)
     dni_administrador = models.CharField(max_length=20)
     fecha_Nacimiento = models.DateField(default=datetime.now)
     genero = models.CharField(max_length=6, choices=GENDER_CHOICE, default=UNDEFINED)
-    confirmation_handling_sensitive_data = models.BooleanField(default=True)
-    biografia = models.TextField(max_length=50)
+    Confirmacion_manejo_datos_sensibles = models.BooleanField(default=True)
+    biografia = models.TextField(max_length=100)
     timestamp = models.DateTimeField(auto_now_add=True , auto_now = False)
     actualizado= models.DateTimeField(auto_now_add=False , auto_now = True)
     # created = models.DateTimeField(auto_now_add=True)
@@ -86,7 +86,7 @@ class User(AbstractUser):
         db_table = 'auth_user'
 
     def get_absolute_url(self):
-        return reverse('users:detailuser') #namespace posts
+        return reverse('users:userdetail') #namespace posts
         #"/posts/%s/" %(self.id)
 
     def __str__(self):

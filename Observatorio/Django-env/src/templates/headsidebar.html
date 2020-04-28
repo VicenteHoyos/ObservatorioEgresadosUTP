@@ -25,10 +25,10 @@
 
                                 {% if  user.is_superuser %}
                                 <li><a href="{% url 'portal:inviteadmin' %}">Invitar Administrador</a></li>
-                                <li><a href="{% url 'users:userlist' %}">Habilitar Cuenta Administrador</a></li>
-                                <li><a href="">Modificar Cuenta Administrador</a></li>
-                                <li><a href="#">Deshabilitar Cuenta Administrador</a></li>
-                                <li><a href="#">Buscar Cuenta Administrador</a></li>
+                                <li><a href="{% url 'users:userenableadmin' %}">Habilitar Cuenta Administrador</a></li>
+                                <li><a href="{% url 'users:userlistupdateadmin' %}">Modificar Cuenta Administrador</a></li>
+                                <li><a href="{% url 'users:userlistdisableadmin' %}">Deshabilitar Cuenta Administrador</a></li>
+                                <li><a href="{% url 'users:userlist' %}">Buscar Cuenta Administrador</a></li>
                                 <li><a href="{% url 'users:userupdate' %}">Editar Perfil</a></li>
                                 <li><a href="{% url 'auth_password_change' %}">Modificar Contraseña</a></li>
                                 

@@ -51,6 +51,7 @@
 <div class="container">
 
 {% if not request.user.is_authenticated %}
+
 {% block jumbotron %}
 {% endblock %}
 
@@ -68,7 +69,7 @@
 {% include "headsidebar2.html" %}
 <!-- ---------------------------------------------------- -->
 {% endif %}
-
+<!-- --------------------------Registro--login--------------- -->
 {% block contentOut %}
 {% endblock %}
 

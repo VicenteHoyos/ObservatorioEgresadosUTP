@@ -75,7 +75,7 @@
 </div>
 {% endblock %}
 
-
+{% if not request.user.is_authenticated %}
 {% block contentInicio %}
 <div class="row">
   <div class="col-sm-3 col-xs-12 pull-right">
@@ -100,8 +100,12 @@
   </p>
 </div>
 </div>
-
-
 <hr/>
 {% endblock %}
+{% else %}
 
+{% block content %}
+<h2>Inicio</h2>
+{% endblock %}
+
+{% endif %}

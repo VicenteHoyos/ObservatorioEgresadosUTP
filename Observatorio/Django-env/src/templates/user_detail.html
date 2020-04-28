@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {%  load urlify%}
 
-{% block head_title%}Detalles Perfil | {{ block.super }} {% endblock %}
+{% block head_title%}Perfil | {{ block.super }} {% endblock %}
 
 {% block content %}
-<div class="col-sm-12 col-sm-offset-1 ">
+<div class="col-sm-11 col-sm-offset-1 ">
 
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
@@ -21,14 +21,15 @@
                         {% else %}
                             <img src="{{ instance.imagen_Perfil.url }}" class="img-circle img-responsive"/>
                         {% endif %}
-
-                       <h4>Biografia</h4> 
-                       <p>{{ instance.biografia }}</p>
+                        {% if instance.biografia %}
+                            <h4><strong>Biografia</strong></h4> 
+                            <p>{{ instance.biografia }}</p>
+                        {% endif %}
                  
                       </div>
                       <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8" >
                           <div class="container" >
-                            <h2>{{ instance.username }}</h2>
+                            <h2><strong>{{ instance.username }}</strong></h2>
                             <p>Cargo:  <b> {% if instance.is_superuser %} Superusuario {% endif %}</b></p>
                           
                            
@@ -37,12 +38,13 @@
                           <ul class="container details" >
                             <li><p><span class="glyphicon glyphicon-user one" style="width:50px;"></span>{% if instance.get_full_name %}{{ instance.get_full_name }} {% else %} {{ instance.username }} {% endif %}</p></li>
                             <li><p><span class="glyphicon glyphicon-envelope one" style="width:50px;"></span>{{ instance.email }}</p></li>
-                            <li><p><span class="glyphicon glyphicon-phone" style="width:50px;"></span>{{ instance.telefono }}</p></li>
+                            <li><p><span class="glyphicon glyphicon-phone" style="width:50px;"></span>{% if instance.telefono %}{{ instance.telefono }}{% endif %}</p></li>
+                            <li><p><span class="glyphicon glyphicon-globe" style="width:50px;"></span>{% if instance.ciudad %}{{ instance.ciudad }}{% endif %}</p></li>
                           </ul>
                           <hr>
-                          <div class="col-sm-10 col-xs-12 tital " >Fecha de Nacimiento: {{ instance.fecha_Nacimiento }}</div>
+                          <div class="col-sm-12 col-xs-12 tital " >{% if instance.fecha_Nacimiento %}Fecha de Nacimiento: {{ instance.fecha_Nacimiento }}{% endif %}</div>
                           <hr>
-                          <div class="col-sm-10 col-xs-12 tital " >Se unió: {{ instance.date_joined }}</div>
+                          <div class="col-sm-12 col-xs-12 tital " >Se unió: {{ instance.date_joined }}</div>
                           
                       </div>
                 

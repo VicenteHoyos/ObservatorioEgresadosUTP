@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-{% block head_title%}Editar Perfil | {{ block.super }} {% endblock %}
+{% block head_title%}Habilitar Cuenta Administrador | {{ block.super }} {% endblock %}
 
 {% block content %}
 <div class="col-sm-10 col-sm-offset-1" >
-<h2><center><strong>Moficar datos Cuenta</strong> </center></h2>
+<h2><center><strong>Modificar Datos Cuenta Administrador</strong> </center></h2>
     <form method="POST" action="" enctype="multipart/form-data" >{% csrf_token %}
         {{ form|crispy }}
         <input class="btn btn-primary" type="submit" value="Guardar Cambios">
-        <a href="{% url 'portal:inicio' %}" class="btn btn-primary" role="button">Cancelar</a>
     </form>
 </div>
 {% endblock %}

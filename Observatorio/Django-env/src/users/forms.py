@@ -11,16 +11,51 @@ class userForm(forms.ModelForm):
         "first_name",
         "last_name",
         "email",
-        "is_active", 
         "is_superusuario" , 
-        "is_administrador" , 
-        "is_egresado",
          "website",
          "telefono",
          "ciudad", 
          "dni_administrador",
          "fecha_Nacimiento",
          "genero",
-         "confirmation_handling_sensitive_data",
+         "Confirmacion_manejo_datos_sensibles",
+         "biografia"
+        }
+
+class userEnableForm(forms.ModelForm):
+    class Meta:
+        model = User
+        
+        fields ={
+        "username",
+        "email",
+        "is_staff", 
+        "is_administrador", 
+        }
+
+class userDisableForm(forms.ModelForm):
+    class Meta:
+        model = User
+        
+        fields ={
+        "username",
+        "email",
+        "is_staff", 
+        "is_administrador", 
+        }
+
+class userAdminUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        
+        fields ={
+        "username",
+        "first_name",
+        "last_name",
+        "email", 
+         "website",
+         "telefono",
+         "ciudad", 
+         "genero",
          "biografia"
         }
