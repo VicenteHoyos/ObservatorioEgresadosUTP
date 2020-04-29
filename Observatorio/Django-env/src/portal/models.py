@@ -37,5 +37,5 @@ class Contacto(models.Model):
 		return self.email
 
 	def get_absolute_url(self):
-		return reverse('portal:contact') #namespace posts
+		return reverse('portal:inicio') #namespace posts
         #"/posts/%s/" %(self.id)

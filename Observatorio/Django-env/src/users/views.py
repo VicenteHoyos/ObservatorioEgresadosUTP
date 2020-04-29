@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from .forms import userForm, userEnableForm, userAdminUpdateForm , userDisableForm
 from .models import User #importo mi modelo
-from portal.models import InvitacionAdmin
+from portal.models import InvitacionAdmin, Registrado
 
 def user_detail(request):
     #instance= Post.objects.get(id=None)
@@ -215,3 +215,39 @@ def user_list(request):
 		"title": "Listado Administradores", 
 	}
 	return render(request,"user_list.html", context)
+
+def user_enable_egresado(request):
+    listquery=[]
+    if not request.user.is_authenticated :
+        raise Http404
+
+    if request.user.is_staff and request.user.is_administrador:
+        queryset = Registrado.objects.all()
+        querysetusers = User.objects.all()
+        
+    if len(querysetusers) >= len(queryset):
+        for u in querysetusers:
+            for u2 in queryset:
+                if (u.email)==(u2.email):
+                    if not u.is_staff:
+                        listquery.append(u)
+                else:
+                    pass
+    else:
+        for u in queryset:
+            for u2 in querysetusers:
+                if (u.email)==(u2.email):
+                    if not u2.is_staff:
+                        listquery.append(u2)
+                else:
+                    pass
+    paginator = Paginator(listquery, 1) # Show 25 contacts per page.
+    page_number = request.GET.get('page')
+    objects_list = paginator.get_page(page_number)
+    
+    context = {
+        "objects_list": objects_list,
+        "title": "Listado Solicitudes Egresados", 
+    }
+
+    return render(request,"user_enable_egresado.html", context)

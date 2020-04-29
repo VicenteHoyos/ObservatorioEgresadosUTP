@@ -12,10 +12,10 @@
                             </div>
                             <!--User details -->
                             <div class="panel-body">
-                                {% if not user.is_superuser and request.user.is_staff %}
+                                {% if not user.is_superuser and request.user.is_staff and request.user.is_administrador %}
                                 <li><a href="{% url 'posts:create' %}">Crear Noticia</a></li>
                                 <li><a href="{% url 'posts:list' %}">Modificar Noticia</a></li>
-                                <li><a href="#">Habilitar Cuenta Egresado</a></li>
+                                <li><a href="{% url 'users:userenableegresado' %}">Habilitar Cuenta Egresado</a></li>
                                 <li><a href="#">Modificar Cuenta Egresado</a></li>
                                 <li><a href="#">Buscar Cuenta Egresado</a></li>
                                 <li><a href="#">Deshabilitar Cuenta Egresado</a></li>

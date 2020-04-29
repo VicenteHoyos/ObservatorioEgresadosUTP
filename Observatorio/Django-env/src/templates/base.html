@@ -50,31 +50,31 @@
 
 <div class="container">
 
-{% if not request.user.is_authenticated %}
+    {% if not request.user.is_authenticated %}
 
-{% block jumbotron %}
-{% endblock %}
+    {% block jumbotron %}
+    {% endblock %}
 
-{% block contentInicio %}
-{% endblock %}
+    {% block contentInicio %}
+    {% endblock %}
 
-{% endif %}
+    {% endif %}
 
-{% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated %}
 
-<!-- ------------------------sidebar------------------------>
-{% include "headsidebar.html" %}
-                              {% block content %}
-                              {% endblock %}
-{% include "headsidebar2.html" %}
-<!-- ---------------------------------------------------- -->
-{% endif %}
-<!-- --------------------------Registro--login--------------- -->
-{% block contentOut %}
-{% endblock %}
-
+    <!-- ------------------------sidebar------------------------>
+    {% include "headsidebar.html" %}
+                                  {% block content %}
+                                  {% endblock %}
+    {% include "headsidebar2.html" %}
+    <!-- ---------------------------------------------------- -->
+    {% endif %}
+    <!-- --------------------------Registro--login--------------- -->
+    {% block contentOut %}
+    {% endblock %}
 
 </div>
+
 {% include "javascript.html" %}
 <footer class="border-top footer text-muted">
     <div class="container">

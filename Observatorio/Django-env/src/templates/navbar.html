@@ -10,14 +10,14 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" >
-        <img src= '{% static "img/logoUTP.png" %}' class="img-responsive" class="d-inline-block align-top" width="100" height="100" alt="">
+        <img src= '{% static "img/logoUTP.png" %}' class="img-responsive" class="d-inline-block align-top" width="100" height="100" >
       </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="active"><a href="{% url 'portal:inicio' %}">Inicio</a></li>
 
-        {% if request.user.is_staff and user.is_superuser %}
+        {% if request.user.is_authenticated %}
         <li><a href="{% url 'users:userdetail' %}">   Ver Perfil</a></li>
         {% endif %}
 
@@ -40,7 +40,7 @@
       </ul>
         <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated %}
-        <li><a href="{% url 'auth_logout' %}">Cerrar Sesion</a></li>
+        <li class="active"><a href="{% url 'auth_logout' %}">Cerrar Sesion</a></li>
         <!-- <li><a href="{% url 'registration_register' %}">Registrarte</a></li>   -->
         <!-- <li class="active"><a href="{% url 'auth_login' %}">Login</a></li> -->
         {% endif %}

@@ -12,5 +12,5 @@ urlpatterns = [
     path('update_admin_user/<int:id>',views.user_update_admin, name='userupdateadmin'), 
     path('user_list_disable_admin',views.user_list_disable_admin, name='userlistdisableadmin'),     
     path('disable_user_admin/<int:id>',views.user_disable_admin, name='userdisableadmin'),    
-
+    path('enable_egresado_user',views.user_enable_egresado, name='userenableegresado'),
 ]
