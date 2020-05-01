@@ -30,7 +30,7 @@
                       <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8" >
                           <div class="container" >
                             <h2><strong>{{ instance.username }}</strong></h2>
-                            <p>Cargo:  <b> {% if instance.is_superuser %} Superusuario {% endif %}{% if instance.is_staff and user.is_administrador %} Administrador {% endif %}</b></p>
+                            <p>Cargo:  <b> {% if instance.is_superuser %} Superusuario {% endif %}{% if instance.Administrador %} Administrador {% endif %}{% if instance.Egresado %}Usuario {% endif %}</b></p>
                           
                            
                           </div>

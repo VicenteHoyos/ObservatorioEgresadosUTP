@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-    {% block head_title%} Usuarios | {{ block.super }} {% endblock %}
+    {% block head_title%}Deshabilitar Usuario | {{ block.super }} {% endblock %}
 
     {% block content %}
 
-    
+<!--     
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
     <!------ Include the above in your HEAD tag ---------->
 <div class="col-sm-10 col-sm-offset-1">
-    <h2><strong><center>{{ title }}</center></strong></h2>
+    <!-- <h2><strong><center>{{ title }}</center></strong></h2> -->
     <center>
     <form method="GET" action="">
         <input class="text-align-center" type="text" name="q" placeholder="Buscar Usuario" value="{{ request.GET.q }}"/>
@@ -21,9 +21,8 @@
 
 {% if user.is_superuser %}
     {% for obj in objects_list %}
-        {% if obj.is_staff %}
-               
-                  <div class="col">
+        {% if obj.Administrador %}
+                <div class="col">
                       
                     <div class="panel-body">
                       <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
@@ -42,7 +41,7 @@
                       <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8" >
                           <div class="container" >
                             <h2><strong>{{ obj.username }}</strong></h2>
-                            <p>Cargo: <b> {% if obj.is_superuser %} Superusuario {% endif %}{% if obj.is_staff %}Administrador {% endif %}</b></p>
+                            <p>Cargo: <b> {% if obj.is_superuser %} Superusuario {% endif %}{% if obj.Administrador %}Administrador {% endif %}</b></p>
                           
                            
                           </div>
@@ -61,8 +60,8 @@
                       </div>
                     </div>
                     <hr>
-                    <p><a href="{% url 'users:userdisableadmin' id=obj.id %}" class="btn btn-primary" role="button">Deshabilitar Cuenta Administrador</a>
-                        <a href="{% url 'portal:inicio' %}" class="btn btn-primary" role="button">Cancelar</a> </p>
+                    <p class="text-center"><a href="{% url 'users:useradmindisable' id=obj.id %}" class="btn btn-primary" role="button">Deshabilitar Cuenta Administrador</a>
+                    <a href="{% url 'portal:inicio' %}" class="btn btn-primary" role="button">Cancelar</a> </p>
                 </div>
         {% endif %}
     {% endfor %}

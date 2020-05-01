@@ -13,3 +13,14 @@ class PostForm(forms.ModelForm):
             "draft",
             "publish"
         }
+class PostUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        
+        fields ={
+            "titulo",
+            "contenido",
+            "imagen",
+            "draft",
+            "publish"
+        }

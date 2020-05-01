@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 
 from .forms import RegModelForm , ContactForm, InvitacionAdminForm
 from .models import Registrado, Contacto, InvitacionAdmin
@@ -96,7 +97,12 @@ def solicitud_registro(request):
 		instance.user = request.user
 		instance.save()	
 		return HttpResponseRedirect(instance.get_absolute_url())
-	return render(request, "solicitud_register.html", context)
+
+	if not request.user.is_authenticated:
+		return render(request, "solicitud_register.html", context)
+	else:
+		raise PermissionDenied
+	
 
 def invitacionAdmin(request):
 	titulo = "Invitar Administrador"
@@ -125,7 +131,11 @@ def invitacionAdmin(request):
 		"form_contacto": form,
 		"titulo": titulo,
 	}
-	return render(request, "inviteadmin.html", context)
+	if request.user.is_superuser:
+		return render(request, "inviteadmin.html", context)
+	else:
+		raise PermissionDenied
+	
 
 
 def contacto(request):
@@ -155,7 +165,10 @@ def contacto(request):
 		"form_contacto": form,
 		"titulo": titulo,
 	}
-	return render(request, "contacto.html", context)
+	if request.user.is_administrador or request.user.is_egresado:
+		return render(request, "contacto.html", context)
+	else:
+		raise PermissionDenied
 
 
 

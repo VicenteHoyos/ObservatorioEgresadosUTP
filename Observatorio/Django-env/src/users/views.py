@@ -9,15 +9,17 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from urllib.parse import quote_plus
 from django.db.models import Prefetch
+from django.core.exceptions import PermissionDenied
 
 from django.shortcuts import get_object_or_404, render, redirect
 
 # Create your views here.
 
-from .forms import userForm, userEnableForm, userAdminUpdateForm , userDisableForm
+from .forms import userForm, userEnableForm, userAdminUpdateForm , userDisableForm, userEnableEgresadoForm ,userDisableEgresadoForm, userEgresadoUpdateForm
 from .models import User #importo mi modelo
 from portal.models import InvitacionAdmin, Registrado
 
+#ver perfil
 def user_detail(request):
     #instance= Post.objects.get(id=None)
     instance = get_object_or_404(User, id=request.user.id)
@@ -28,6 +30,7 @@ def user_detail(request):
 
     return render(request,"user_detail.html", context)
 
+#lista habilitar usuario administrador 
 def user_enable_admin(request):
     listquery=[]
     if not request.user.is_authenticated :
@@ -37,22 +40,22 @@ def user_enable_admin(request):
         queryset = InvitacionAdmin.objects.all()
         querysetusers = User.objects.all()
         
-    if len(querysetusers) >= len(queryset):
-        for u in querysetusers:
-            for u2 in queryset:
-                if (u.email)==(u2.email):
-                    if not u.is_staff:
-                        listquery.append(u)
-                else:
-                    pass
-    else:
-        for u in queryset:
-            for u2 in querysetusers:
-                if (u.email)==(u2.email):
-                    if not u2.is_staff:
-                        listquery.append(u2)
-                else:
-                    pass
+        if len(querysetusers) >= len(queryset):
+            for u in querysetusers:
+                for u2 in queryset:
+                    if (u.email)==(u2.email):
+                        if not u.Administrador:
+                            listquery.append(u)
+                    else:
+                        pass
+        else:
+            for u in queryset:
+                for u2 in querysetusers:
+                    if (u.email)==(u2.email):
+                        if not u2.Administrador:
+                            listquery.append(u2)
+                    else:
+                        pass
     paginator = Paginator(listquery, 1) # Show 25 contacts per page.
     page_number = request.GET.get('page')
     objects_list = paginator.get_page(page_number)
@@ -61,32 +64,214 @@ def user_enable_admin(request):
         "objects_list": objects_list,
         "title": "Listado Usuarios", 
     }
+    if request.user.is_superuser:
+        return render(request,"user_enable_admin.html", context)
+    else:
+        raise PermissionDenied
 
-    return render(request,"user_enable_admin.html", context)
 
-def user_enable_admin_detail(request, id=None):
+#lista habilitar usuario egresado 
+def user_enable_egresado(request):
+    listquery=[]
     if not request.user.is_authenticated :
         raise Http404
+
+    if request.user.Administrador:
+        queryset = Registrado.objects.all()
+        querysetusers = User.objects.all()
+        
+        if len(querysetusers) >= len(queryset):
+            for u in querysetusers:
+                for u2 in queryset:
+                    if (u.email)==(u2.email):
+                        if not u.Egresado:
+                            listquery.append(u)
+                    else:
+                        pass
+        else:
+            for u in queryset:
+                for u2 in querysetusers:
+                    if (u.email)==(u2.email):
+                        if not u2.Egresado:
+                            listquery.append(u2)
+                    else:
+                        pass
+    paginator = Paginator(listquery, 1) # Show 25 contacts per page.
+    page_number = request.GET.get('page')
+    objects_list = paginator.get_page(page_number)
+    
+    context = {
+        "objects_list": objects_list,
+        "title": "Listado Solicitudes Egresados", 
+    }
+
+    if request.user.Administrador:
+        return render(request,"user_enable_egresado.html", context)
+    else:
+        raise PermissionDenied
+    
+#habiliar usuario egresado indicado 
+def user_enable_detail(request, id=None):
+    Bandquery=0
+    if not request.user.is_authenticated :
+        raise Http404
+
     instance = get_object_or_404(User, id=id)
 
-    form = userEnableForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+    if request.user.Administrador and not request.user.is_superuser:
+        queryset = Registrado.objects.all()
+        querysetuser = instance
+
+        for u in queryset:
+            if (u.email)==(querysetuser.email):
+                if querysetuser.Egresado == False:
+                    Bandquery=1
+
+    if Bandquery == 1:
+        formEgresado = userEnableEgresadoForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+        if formEgresado.is_valid():
+            instance = formEgresado.save(commit = False)
+            instance.save()
+            if request.user.Administrador:
+                messages.success(request, "Cuenta Egresado Habilitada", extra_tags="html_safe")               
+            return HttpResponseRedirect(instance.get_absolute_url())
+            
+        context = {        
+        "instance": instance,
+        "form": formEgresado,
+        }
+
+    if  Bandquery==1:    
+        if request.user.Administrador:
+            return render(request,"user_enable_detail.html", context)
+        else:
+            raise PermissionDenied
+    else:
+        raise PermissionDenied
+
+#habiliar usuario indicado Admin
+def user_enable_detail_admin(request, id=None):
+    Bandquery=0
+    if not request.user.is_authenticated :
+        raise Http404
+
+    instance = get_object_or_404(User, id=id)
+
+    if request.user.is_superuser:
+        queryset = InvitacionAdmin.objects.all()
+        querysetuser = instance
+
+        for u in queryset:
+            if (u.email)==(querysetuser.email):
+                if not querysetuser.Administrador:
+                    Bandquery=1
+
+    if Bandquery == 1:
+        formAdmin = userEnableForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+        if formAdmin.is_valid():
+            instance = formAdmin.save(commit = False)
+            instance.save()
+            if request.user.is_superuser:
+                messages.success(request, "Cuenta Administrador Habilitada", extra_tags="html_safe")               
+            return HttpResponseRedirect(instance.get_absolute_url())
+            
+        context = {        
+        "instance": instance,
+        "form": formAdmin,
+        }
+
+    if  Bandquery==1:    
+        if request.user.is_superuser:
+            return render(request,"user_enable_detail.html", context)
+        else:
+            raise PermissionDenied
+    else:
+        raise PermissionDenied
+
+#modificar Egresado usuario indicado
+def user_update_observatorio(request, id=None):
+    Bandquery=0
+    if not request.user.is_authenticated :
+        raise Http404
+    #instance= Post.objects.get(id=None)
+    instance = get_object_or_404(User, id=id)
     
-    if form.is_valid():
-        instance = form.save(commit = False)
-        instance.save()
-        messages.success(request, "Cuenta Administrador Habilitada", extra_tags="html_safe")                
-        return HttpResponseRedirect(instance.get_absolute_url())
-    
-    context = {        
+    if request.user.Administrador and not request.user.is_superuser:
+        queryset = Registrado.objects.all()
+        querysetuser = instance
+
+        for u in queryset:
+            if (u.email)==(querysetuser.email):
+                if querysetuser.Egresado:
+                    Bandquery=1
+
+    if Bandquery == 1:
+        form = userEgresadoUpdateForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+        if form.is_valid():
+            instance = form.save(commit = False)
+            instance.save()
+            if request.user.Administrador and not request.user.is_superuser:
+                messages.success(request, "La Informacion ha sido modificado", extra_tags="html_safe")               
+            return HttpResponseRedirect(instance.get_absolute_url())
+            
+        context = {
+        "title": "Modificar Datos Cuenta",        
         "instance": instance,
         "form": form,
         }
-    return render(request,"user_enable_admin_detail.html", context)
 
+    if  Bandquery==1:    
+        if request.user.Administrador:
+            return render(request,"user_update_observatorio.html", context)
+        else:
+            raise PermissionDenied
+    else:
+        raise PermissionDenied
+
+#modificar Admin usuario indicado
+def user_Admin_update_observatorio(request, id=None):
+    Bandquery=0
+    if not request.user.is_authenticated :
+        raise Http404
+    instance = get_object_or_404(User, id=id)
+    
+    if request.user.is_superuser:
+        queryset = InvitacionAdmin.objects.all()
+        querysetuser = instance
+
+        for u in queryset:
+            if (u.email)==(querysetuser.email):
+                if querysetuser.Administrador:
+                    Bandquery=1
+
+    if Bandquery == 1:
+        form = userAdminUpdateForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+        if form.is_valid():
+            instance = form.save(commit = False)
+            instance.save()
+            if request.user.is_superuser:
+                messages.success(request, "La Informacion ha sido modificado", extra_tags="html_safe")               
+            return HttpResponseRedirect(instance.get_absolute_url())
+            
+        context = {
+        "title": "Modificar Datos Cuenta",        
+        "instance": instance,
+        "form": form,
+        }
+
+    if  Bandquery==1:    
+        if request.user.is_superuser:
+            return render(request,"user_update_observatorio.html", context)
+        else:
+            raise PermissionDenied
+    else:
+        raise PermissionDenied
+
+#deshabilitar usuario administrador lista
 def user_list_disable_admin(request):
+	queryset = []
 	if request.user.is_superuser:
-		queryset = User.objects.filter(is_staff = True, is_administrador=True)
-	
+		queryset = User.objects.filter(Administrador = True)
 	query = request.GET.get("q")
 	if query:
 		queryset=queryset.filter(
@@ -104,27 +289,115 @@ def user_list_disable_admin(request):
 		"objects_list": objects_list,
 		"title": "Listado Administradores", 
 	}
-	return render(request,"user_list_disable_admin.html", context)
+	if request.user.is_superuser:
+		return render(request,"user_list_disable_admin.html", context)
+	else:
+		raise PermissionDenied
 
-def user_disable_admin(request, id=None):
+#deshabilitar usuario egresado lista
+def user_list_disable_egresado(request):
+	queryset=[]
+	if request.user.Administrador:
+		queryset = User.objects.filter( Egresado=True)
+	query = request.GET.get("q")
+	if query:
+		queryset=queryset.filter(
+			Q(email__icontains=query)|
+			Q(username__icontains=query)|
+			Q(first_name__icontains=query)|
+			Q(last_name__icontains=query)
+			).distinct()
+
+	paginator = Paginator(queryset, 1) # Show # contacts per page.
+	page_number = request.GET.get('page')
+	objects_list = paginator.get_page(page_number)
+	
+	context = {
+		"objects_list": objects_list,
+		"title": "Listado Egresados", 
+	}
+	if request.user.Administrador:
+		return render(request,"user_list_disable_egresado.html", context)
+	else:
+		raise PermissionDenied
+
+#deshabilitar usuario Egresado indicado
+def user_disable(request, id=None):
+    Bandquery=0
     if not request.user.is_authenticated :
         raise Http404
     instance = get_object_or_404(User, id=id)
 
-    form = userDisableForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
-    
-    if form.is_valid():
-        instance = form.save(commit = False)
-        instance.save()
-        messages.success(request, "Cuenta Administrador Habilitada", extra_tags="html_safe")                
-        return HttpResponseRedirect(instance.get_absolute_url())
-    
-    context = {        
+    if request.user.Administrador and not request.user.is_superuser:
+        queryset = Registrado.objects.all()
+        querysetuser = instance
+
+        for u in queryset:
+            if (u.email)==(querysetuser.email):
+                if querysetuser.Egresado:
+                    Bandquery=1
+
+    if Bandquery == 1:
+        form = userDisableEgresadoForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+        if form.is_valid():
+            instance = form.save(commit = False)
+            instance.save()
+            if request.user.Administrador and not request.user.is_superuser:
+                messages.success(request, "Cuenta Egresado Deshabilitada", extra_tags="html_safe")               
+            return HttpResponseRedirect(instance.get_absolute_url())
+            
+        context = {        
         "instance": instance,
         "form": form,
         }
-    return render(request,"user_disable_admin.html", context)
 
+    if  Bandquery==1:    
+        if request.user.Administrador:
+            return render(request,"user_disable.html", context)
+        else:
+            raise PermissionDenied
+    else:
+        raise PermissionDenied
+
+#deshabilitar usuario administrador indicado
+def user_admin_disable(request, id=None):
+    Bandquery=0
+    if not request.user.is_authenticated :
+        raise Http404
+    instance = get_object_or_404(User, id=id)
+
+    if request.user.is_superuser:
+        queryset = InvitacionAdmin.objects.all()
+        querysetuser = instance
+
+        for u in queryset:
+            if (u.email)==(querysetuser.email):
+                if querysetuser.Administrador:
+                    Bandquery=1
+
+    if Bandquery == 1:
+        form = userDisableForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
+        if form.is_valid():
+            instance = form.save(commit = False)
+            instance.save()
+            if request.user.is_superuser:
+                messages.success(request, "Cuenta Administrador Deshabilitada", extra_tags="html_safe")               
+            return HttpResponseRedirect(instance.get_absolute_url())
+       
+        context = {        
+        "instance": instance,
+        "form": form,
+        }
+
+    if  Bandquery==1:    
+        if request.user.is_superuser:
+            return render(request,"user_disable.html", context)
+        else:
+            raise PermissionDenied
+    else:
+        raise PermissionDenied
+
+#modificar perfil 
 def user_update(request):
     #modificar datos propia cuenta
     if not request.user.is_authenticated :
@@ -148,9 +421,15 @@ def user_update(request):
 
     return render(request,"user_update.html", context)
 
-def user_list_update_admin(request):
+#modificar usuario lista
+def user_list_update(request):
+	titulo = "Listado"
 	if request.user.is_superuser:
-		queryset = User.objects.filter(is_staff = True, is_administrador=True)
+		queryset = User.objects.filter(Administrador = True)
+		titulo = "Listado Administradores"
+	if request.user.Administrador and not request.user.is_superuser:
+		queryset = User.objects.filter( Egresado=True)
+		titulo = "Listado Egresados"
 	
 	query = request.GET.get("q")
 	if query:
@@ -167,36 +446,21 @@ def user_list_update_admin(request):
 	
 	context = {
 		"objects_list": objects_list,
-		"title": "Listado Administradores", 
+		"title": titulo, 
 	}
-	return render(request,"user_list_update_admin.html", context)
+	return render(request,"user_list_update.html", context)
 
-def user_update_admin(request, id=None):
-    if not request.user.is_authenticated :
-        raise Http404
-    #instance= Post.objects.get(id=None)
-    instance = get_object_or_404(User, id=id)
 
-    form = userAdminUpdateForm(request.POST or None, request.FILES or None, instance= instance)# edit el form
-    
-    if form.is_valid():
-        instance = form.save(commit = False)
-        instance.save()
-        messages.success(request, "Tu Informacion ha sido modificado", extra_tags="html_safe")                
-        return HttpResponseRedirect(instance.get_absolute_url())
-    
-    context = {        
-        "title": "Modificar Datos Cuenta",
-        "instance": instance,
-        "form": form,
-    }
-
-    return render(request,"user_update_admin.html", context)
-
+#buscar lista usuarios 
 def user_list(request):
+	titulo= "listado"
 	if request.user.is_superuser:
-		queryset = User.objects.filter(is_staff = True, is_administrador=True)
-	
+		queryset = User.objects.filter(Administrador = True)
+		titulo = "Listado Administradores"
+	if request.user.Administrador and not request.user.is_superuser:
+		queryset = User.objects.filter(is_active = True, Egresado=True)
+		titulo ="Listado Egresados"
+
 	query = request.GET.get("q")
 	if query:
 		queryset=queryset.filter(
@@ -212,42 +476,7 @@ def user_list(request):
 	
 	context = {
 		"objects_list": objects_list,
-		"title": "Listado Administradores", 
+		"title": titulo, 
 	}
 	return render(request,"user_list.html", context)
 
-def user_enable_egresado(request):
-    listquery=[]
-    if not request.user.is_authenticated :
-        raise Http404
-
-    if request.user.is_staff and request.user.is_administrador:
-        queryset = Registrado.objects.all()
-        querysetusers = User.objects.all()
-        
-    if len(querysetusers) >= len(queryset):
-        for u in querysetusers:
-            for u2 in queryset:
-                if (u.email)==(u2.email):
-                    if not u.is_staff:
-                        listquery.append(u)
-                else:
-                    pass
-    else:
-        for u in queryset:
-            for u2 in querysetusers:
-                if (u.email)==(u2.email):
-                    if not u2.is_staff:
-                        listquery.append(u2)
-                else:
-                    pass
-    paginator = Paginator(listquery, 1) # Show 25 contacts per page.
-    page_number = request.GET.get('page')
-    objects_list = paginator.get_page(page_number)
-    
-    context = {
-        "objects_list": objects_list,
-        "title": "Listado Solicitudes Egresados", 
-    }
-
-    return render(request,"user_enable_egresado.html", context)

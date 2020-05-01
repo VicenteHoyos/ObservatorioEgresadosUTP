@@ -10,8 +10,7 @@ class userForm(forms.ModelForm):
         "username",
         "first_name",
         "last_name",
-        "email",
-        "is_superusuario" , 
+        "email", 
          "website",
          "telefono",
          "ciudad", 
@@ -25,12 +24,20 @@ class userForm(forms.ModelForm):
 class userEnableForm(forms.ModelForm):
     class Meta:
         model = User
+        fields ={
+        # "username",
+        # "email", 
+        "Administrador", 
+        }
+
+class userEnableEgresadoForm(forms.ModelForm):
+    class Meta:
+        model = User
         
         fields ={
-        "username",
-        "email",
-        "is_staff", 
-        "is_administrador", 
+        # "username",
+        # "email", 
+        "Egresado", 
         }
 
 class userDisableForm(forms.ModelForm):
@@ -38,10 +45,18 @@ class userDisableForm(forms.ModelForm):
         model = User
         
         fields ={
-        "username",
-        "email",
-        "is_staff", 
-        "is_administrador", 
+        # "username",
+        # "email",
+        "Administrador", 
+        }
+class userDisableEgresadoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        
+        fields ={
+        # "username",
+        # "email",
+        "Egresado", 
         }
 
 class userAdminUpdateForm(forms.ModelForm):
@@ -57,5 +72,19 @@ class userAdminUpdateForm(forms.ModelForm):
          "telefono",
          "ciudad", 
          "genero",
+         "biografia"
+        }
+
+class userEgresadoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        
+        fields ={
+        "username",
+        "first_name",
+        "last_name", 
+         "website",
+         "telefono",
+         "ciudad",
          "biografia"
         }

@@ -20,9 +20,9 @@ def upload_location(instance, filename):
     return "%s/%s" %(instance.id, filename)
 
 class User(AbstractUser):
-    is_superusuario = models.BooleanField(default=False)
-    is_administrador = models.BooleanField(default=False)
-    is_egresado =models.BooleanField(default=False)
+    Superusuario = models.BooleanField(default=False)
+    Administrador = models.BooleanField(default=False)
+    Egresado =models.BooleanField(default=False)
 
     UNDEFINED = 'indef'
     MALE = 'masc'
@@ -86,7 +86,7 @@ class User(AbstractUser):
         db_table = 'auth_user'
 
     def get_absolute_url(self):
-        return reverse('users:userdetail') #namespace posts
+        return reverse('portal:inicio') #namespace posts
         #"/posts/%s/" %(self.id)
 
     def __str__(self):

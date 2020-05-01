@@ -4,11 +4,12 @@
 
 {% block content %}
 <div class="col-sm-10 col-sm-offset-1" >
-<h2><center><strong>Moficar datos Cuenta</strong> </center></h2>
+<!-- <h2><center><strong>Moficar datos Cuenta</strong> </center></h2> -->
     <form method="POST" action="" enctype="multipart/form-data" >{% csrf_token %}
         {{ form|crispy }}
-        <input class="btn btn-primary" type="submit" value="Guardar Cambios">
-        <a href="{% url 'portal:inicio' %}" class="btn btn-primary" role="button">Cancelar</a>
+        <br/>
+        <p class="text-center"><input class="btn btn-primary" type="submit" value="Guardar Cambios">
+        <a href="{% url 'portal:inicio' %}" class="btn btn-primary" role="button">Cancelar</a></p>
     </form>
 </div>
 {% endblock %}
